@@ -239,7 +239,7 @@ app.get("/setPermission", (req, res) => {
   });
 
   Promise.all(promises)
-    .then(() => {
+    .then((resolved) => {
       // Create link roles to permissions
       res.send({
         message: "success",

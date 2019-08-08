@@ -38,8 +38,8 @@ function userRoles() {
 }
 // companies
 function company() {
-  return db.collection("company");
+  return db.doc(`company/${key}`);
 }
 function companies(key) {
-  return db.doc(`company/${key}`);
+  return db.collection("company");
 }
