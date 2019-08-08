@@ -1,2 +1,5 @@
 node_modules
-serviceAccountKey.json
+# Firebase Tutorial
+dev_serviceAccountKey.json
+# Crack Project
+prod_serviceAccountKey.json 
