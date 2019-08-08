@@ -1,0 +1,25 @@
+{
+  "name": "crack_server",
+  "version": "1.0.0",
+  "description": "Crack initilizer script",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tswalano/firebase_node_server.git"
+  },
+  "author": "Tswalano",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Tswalano/firebase_node_server/issues"
+  },
+  "homepage": "https://github.com/Tswalano/firebase_node_server#readme",
+  "dependencies": {
+    "@firebase/firestore": "^0.8.3",
+    "express": "^4.16.4",
+    "firebase": "^5.5.3",
+    "firebase-admin": "^5.12.0"
+  }
+}

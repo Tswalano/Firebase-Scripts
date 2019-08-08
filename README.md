@@ -1,4 +1,4 @@
-<p align="center">Firebase Crack</p>
+<h1 align="center">Firebase Crack</h1>
 
 ## Available Scripts
 
