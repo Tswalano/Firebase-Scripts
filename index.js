@@ -40,8 +40,10 @@ app.get("/getAllUsers", (req, res) => {
 
 // Create user
 app.get("/createUser", (req, res) => {
+  // const { email } = req.body;
+  console.log("/createUser", req.param);
   const userObj = {
-    email: "paul@fluidity.solutions",
+    email: email,
     emailVerified: false,
     password: "password",
     displayName: "Admin",
@@ -166,16 +168,16 @@ app.get("/addSuperAdmin", (req, res) => {
                   object[key] = doc.data()[key];
                   return object;
                 },
-                { roleKey: doc.id },
+                { roleKey: "xxxxxx" },
               );
               permissionsObject = permission;
             });
           }
-          console.log(permissionsObject);
+          console.log("permissionsObject", permissionsObject);
           return { userObject, permissionsObject };
         })
         .then((object) => {
-          console.log(object);
+          console.log("object", object);
           const { userObject, permissionsObject } = object;
           let companyObject = {};
           return companyRef.then((companySnap) => {
@@ -201,14 +203,32 @@ app.get("/addSuperAdmin", (req, res) => {
           });
         })
         .then((data) => {
-          console.log("setAdminPrivelagges data => ", data);
+          console.log("setAdminPrivelagges data => ", data.uid);
           const { uid } = data;
-          user.setAdminPrivelagges(uid, data).then((doc) => {
-            res.send({
-              status: "OK",
-              message: "{email} now a super administrator admin",
-              data: data,
+          user
+            .setAdminPrivelagges(uid, data)
+            .then((doc) => {
+              res.send({
+                status: "OK",
+                message: "{email} now a super administrator admin",
+                data: data,
+              });
+            })
+            .catch((error) => {
+              console.log("ünknown error", error);
+              res.send({
+                message: "unknown error occured",
+                code: "error",
+                status: 500,
+              });
             });
+        })
+        .catch((error) => {
+          console.log("ünknown error", error);
+          res.send({
+            message: "unknown error occured",
+            code: "error",
+            status: 500,
           });
         });
     })
@@ -222,6 +242,7 @@ app.get("/addSuperAdmin", (req, res) => {
     });
 });
 
+// Set User Permission
 app.get("/setPermission", (req, res) => {
   const rights = [
     "Add",
@@ -278,13 +299,14 @@ app.get("/setPermission", (req, res) => {
 app.get("/createCompany", (req, res) => {
   const compamny = {
     companyType: "Service Production",
-    companyName: "Fluidity Software Solutions",
-    productionName: "Fluidity Software Solutions (Pty) Ltd",
-    contactName: "Sonika Geber",
+    companyName: "The Crack-Lab",
+    productionName: "Crack-Lab (Pty) Ltd",
+    contactName: "Demian Hauptla",
     phone: "+21 123456789",
-    emailAddress: "info@fluidity.solutions",
+    emailAddress: "admin@crack-lab.com",
     imageURL:
       "https://www.facebook.com/616313961858253/photos/643261152496867/",
+    ownerUID: "YwT70sFzKmg9nyYuUdeBVjsmUoe2",
   };
 
   collection
@@ -308,6 +330,7 @@ app.get("/createCompany", (req, res) => {
     });
 });
 
+// Set User Role
 app.get("/setUserRole", (req, res) => {
   const rights = [
     "Add",
@@ -510,4 +533,86 @@ app.get("/setUserRole", (req, res) => {
       });
     });
 });
+
+app.get("/the-team", (req, res) => {
+  const theTeam = {
+    crewStatus: "P1",
+    department: "IT Department",
+    jobTitle: "Developer",
+    firstName: "Glen",
+    lastName: "Mogane",
+    nationality: "ZA",
+    cell: "+27617262421",
+    emailAddress: "glen@fluidity.solutions",
+  };
+
+  collection
+    .theTeams()
+    .add(theTeam)
+    .then((ref) => {
+      request(
+        "http://localhost:3001/setCompanyUserRole?docID=" + ref.id,
+        function(error, response, body) {
+          if (response && response.statusCode) {
+            res.send({
+              message: "Role Configuration Scripts Done",
+              code: "success",
+              status: 200,
+            });
+          } else {
+            res.send({
+              message: "Error Occured",
+              code: "success",
+              status: 500,
+            });
+          }
+        },
+      );
+    })
+    .catch((error) => {
+      console.log("Error Occured On /the-team => ", error);
+      res.send({
+        message: "Error Occured",
+        code: "error",
+        status: 500,
+      });
+    });
+});
+
+// setCompanyUserRole
+app.get("/setCompanyUserRole", (req, res) => {
+  user
+    .createUser({
+      email: "glen@fluidity.solutions",
+      password: "password",
+      displayName: "Tswalano",
+    })
+    .then((response) => {
+      console.log("User Created =>", response);
+      const compamnyUserRole = {
+        company: "FL41tzHLdjhK1aKUUSmo",
+        role: "Administrator",
+        team_key: req.param.docID,
+        uid: response.uid,
+      };
+      return collection.companyUserRoles().add(compamnyUserRole);
+    })
+    .then((companyUserRoleDoc) => {
+      console.log("company user role created => ", companyUserRoleDoc.id);
+      res.send({
+        message: "Team Member Created and Authenticated",
+        code: "success",
+        status: 200,
+      });
+    })
+    .catch((error) => {
+      console.log("Error Occured On /companyUserRoles => ", error);
+      res.send({
+        message: "Error Occured",
+        code: "error",
+        status: 500,
+      });
+    });
+});
+
 app.listen(port, () => console.log(`sdk app listening on port ${port}!`));

@@ -17,6 +17,12 @@ module.exports = {
   // companies
   company: company,
   companies: companies,
+  // the team
+  theTeam: theTeam,
+  theTeams: theTeams,
+  // company user roles
+  companyUserRole: companyUserRole,
+  companyUserRoles: companyUserRoles,
 };
 
 function user(key) {
@@ -52,4 +58,18 @@ function company(key) {
 }
 function companies() {
   return db.collection("company");
+}
+// the-team
+function theTeam(key) {
+  return db.doc(`the-team/${key}`);
+}
+function theTeams() {
+  return db.collection("the-team");
+}
+// company user roles
+function companyUserRole(key) {
+  return db.doc(`companyuserrole/${key}`);
+}
+function companyUserRoles() {
+  return db.collection("companyuserrole");
 }

@@ -68,6 +68,7 @@ async function findUserWithEmailAndDelete(email, nextPageToken) {
 }
 
 function setAdminPrivelagges(key, data) {
+  console.log("setAdminPrivelagges =>", key, data);
   return db
     .collection("users")
     .doc(key)
